@@ -1,3 +1,5 @@
+[English](AI_USAGE.md) | [Français](AI_USAGE.fr.md)
+
 # AI Usage Documentation
 
 ## 1. Overview
