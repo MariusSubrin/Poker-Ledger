@@ -303,8 +303,6 @@ Security-critical features must be validated before being considered complete.
 
 AI-assisted development is used throughout the project. See [AI_USAGE.md](AI_USAGE.md) for further information.
 
-Use of AI : H4.
-
 ## Project Status
 
 The application is being developed incrementally.
@@ -316,3 +314,8 @@ Features described in this document represent the intended product scope. Their 
 This project is initially intended for private use within a small group of friends.
 
 External contributions and public distribution may be considered later.
+
+-------
+
+Use of AI : H4. 
+All the implementations are AI-generated and no one reviewed them for short and needed applications.
