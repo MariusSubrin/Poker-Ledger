@@ -303,6 +303,8 @@ Security-critical features must be validated before being considered complete.
 
 AI-assisted development is used throughout the project. See [AI_USAGE.md](AI_USAGE.md) for further information.
 
+Use of AI : H4.
+
 ## Project Status
 
 The application is being developed incrementally.
