@@ -1,5 +1,7 @@
 # Poker Ledger
 
+[English](README.md) | [Français](README.fr.md)
+
 **A private poker chip tracking application for friends.**
 
 Poker Ledger is a mobile-first Progressive Web Application (PWA) designed to track poker chip balances over time within a private group.
