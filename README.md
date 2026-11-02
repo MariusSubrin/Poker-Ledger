@@ -307,12 +307,6 @@ The application is being developed incrementally.
 
 Features described in this document represent the intended product scope. Their implementation status must be verified against the actual source code and tests.
 
-## License
-
-License: To be determined.
-
-Until a license is explicitly added, all rights are reserved by the project owner.
-
 ## Contributions
 
 This project is initially intended for private use within a small group of friends.
