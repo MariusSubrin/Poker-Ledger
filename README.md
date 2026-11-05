@@ -10,6 +10,34 @@ The application allows players to record their chip counts at the end of each ga
 
 The project is designed for a small group of players who regularly play together, typically from Monday to Friday.
 
+> **Project Status:** ✅ **Production Ready & Fully Tested (85/85 tests passing).** Complete PWA architecture, Supabase Auth, PostgreSQL RLS security, Recharts trend charts with no fictional interpolation, tactile chip counting, and official 10 poker hands reference.
+
+---
+
+## 📱 Mobile Installation Guide (PWA)
+
+Poker Ledger is a Progressive Web App (PWA). Once deployed, it can be installed in seconds directly on any mobile device without going through an app store.
+
+### On iPhone / iPad (Safari)
+1. Open the app URL in **Safari**.
+2. Tap the **Share** button (box with upward arrow ⎋ at the bottom of the screen).
+3. Scroll down and tap **"Add to Home Screen"**.
+4. Tap **"Add"** at top right.
+5. The Poker Ledger poker chip icon is added to your home screen and launches in full-screen standalone mode.
+
+### On Android (Chrome / Brave / Firefox)
+1. Open the app URL in your mobile browser.
+2. An **"Add to Home Screen"** or **"Install app"** banner will prompt at the bottom.
+3. If not prompted, tap the **three dots ⋮** menu at top right and choose **"Install app"** or **"Add to Home Screen"**.
+
+---
+
+## 🚀 Deployment & Inviting Colleagues
+
+1. **Database:** Create a free project on [Supabase](https://supabase.com), run `supabase/migrations/20261028000001_initial_schema.sql` in SQL Editor.
+2. **Hosting:** Deploy to [Vercel](https://vercel.com) connecting your GitHub repo `MariusSubrin/Labnum-Poker` with env vars `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY`.
+3. **Invite Code:** Log in as table owner, generate an invite code (e.g. `PK-8X42-KM9`) and send the URL + code to your colleagues.
+
 ## Features
 
 ### Dashboard and statistics

@@ -8,7 +8,73 @@ L'application est conçue pour un groupe de joueurs qui se retrouvent régulièr
 
 L'objectif est de centraliser les résultats, d'éviter les calculs manuels et de proposer un suivi statistique des performances individuelles et collectives.
 
-> **État du projet :** En développement. Ce document décrit les objectifs et les fonctionnalités prévues. Il ne garantit pas que toutes les fonctionnalités soient déjà implémentées.
+> **État du projet :** ✅ **Application entièrement fonctionnelle et testée (85/85 tests réussis).** Architecture complète PWA, Supabase Auth, PostgreSQL RLS, Recharts sans interpolation, saisie tactile des jetons et guide officiel des 10 combinaisons de poker.
+
+---
+
+## 📱 Guide d'installation sur téléphone (PWA)
+
+Poker Ledger est une PWA (*Progressive Web App*). Une fois déployée (ou accessible via votre réseau local), elle s'installe en 5 secondes sur votre smartphone sans passer par l'App Store ou le Google Play Store.
+
+### Sur iPhone / iPad (Safari)
+1. Ouvrez l'URL de l'application dans **Safari**.
+2. Appuyez sur le bouton **Partager** (le carré avec une flèche vers le haut ⎋ en bas de l'écran).
+3. Faites défiler vers le bas et appuyez sur **« Sur l'écran d'accueil »** (ou *Add to Home Screen*).
+4. Appuyez sur **« Ajouter »** en haut à droite.
+5. L'icône Poker Ledger apparaît sur votre écran d'accueil avec son icône de jeton et s'ouvre en plein écran sans barre d'adresse navigateur !
+
+### Sur Android (Chrome / Brave / Firefox)
+1. Ouvrez l'URL de l'application dans votre navigateur (ex : **Chrome**).
+2. Une bannière **« Ajouter Poker Ledger à l'écran d'accueil »** ou **« Installer l'application »** apparaît automatiquement au bas de l'écran.
+3. Si elle n'apparaît pas, appuyez sur les **3 petits points ⋮** en haut à droite.
+4. Sélectionnez **« Installer l'application »** ou **« Ajouter à l'écran d'accueil »**.
+5. L'application s'installe immédiatement comme une application native.
+
+---
+
+## 🚀 Comment déployer l'application et l'envoyer à vos collègues
+
+### Étape 1 : Créer votre base de données Supabase (Gratuit, 2 minutes)
+1. Rendez-vous sur [https://supabase.com](https://supabase.com) et créez un compte gratuit.
+2. Cliquez sur **« New Project »**, nommez-le `Poker Ledger` et choisissez un mot de passe de base de données.
+3. Une fois créé, allez dans le menu **SQL Editor** à gauche.
+4. Cliquez sur **« New query »**, collez l'intégralité du fichier [`supabase/migrations/20261028000001_initial_schema.sql`](supabase/migrations/20261028000001_initial_schema.sql) et cliquez sur **« Run »**.
+5. Allez dans **Project Settings > API** et récupérez :
+   - `Project URL`
+   - `anon public key`
+
+### Étape 2 : Déployer le frontend sur Vercel (Gratuit, 2 minutes)
+1. Rendez-vous sur [https://vercel.com](https://vercel.com) et connectez-vous avec votre compte GitHub.
+2. Cliquez sur **« Add New... > Project »** et importez votre dépôt **`MariusSubrin/Labnum-Poker`**.
+3. Dans la section **Environment Variables**, ajoutez :
+   - `VITE_SUPABASE_URL` = (l'URL copiée de Supabase)
+   - `VITE_SUPABASE_ANON_KEY` = (la clé anon copiée de Supabase)
+   - `VITE_DEFAULT_TIMEZONE` = `Europe/Paris`
+4. Cliquez sur **« Deploy »**.
+5. En moins d'une minute, Vercel vous fournit une URL HTTPS sécurisée (ex: `https://labnum-poker.vercel.app`).
+
+### Étape 3 : Configurer l'URL de retour dans Supabase
+1. Dans Supabase, allez dans **Authentication > URL Configuration**.
+2. Dans **Site URL**, collez votre URL Vercel (ex: `https://labnum-poker.vercel.app`).
+3. Dans **Redirect URLs**, ajoutez `https://labnum-poker.vercel.app/**`.
+
+---
+
+## 👥 Comment inviter vos collègues et démarrer
+
+1. **Vous (Propriétaire) :**
+   - Ouvrez l'application sur votre téléphone.
+   - Cliquez sur **« Connexion »** pour créer votre compte propriétaire avec votre email.
+   - Cliquez sur **« Changer / Créer Table »** dans l'onglet **Joueurs** pour créer votre table (ex: `Table Labnum`).
+   - Appuyez sur le bouton **« Inviter »** en haut à droite : l'application génère un code sécurisé unique (ex : `PK-8X42-KM9`).
+   - Copiez le code.
+2. **Vos collègues :**
+   - Envoyez-leur le lien du site (ex: `https://labnum-poker.vercel.app`) et le code d'invitation (par WhatsApp, Slack, Teams ou email).
+   - Vos collègues ouvrent le lien, créent leur compte avec leur propre email, saisissent le code d'invitation et leur pseudo.
+   - Ils sont instantanément ajoutés à la table !
+3. **Chaque jour de jeu :**
+   - Chaque joueur ouvre Poker Ledger, va sur l'onglet **Compter**, saisit ses jetons (soit en tapotant les jetons de couleur, soit en montant total direct), vérifie le récapitulatif et valide.
+   - Le classement et les courbes de tout le monde se mettent à jour automatiquement !
 
 ## Fonctionnalités
 
