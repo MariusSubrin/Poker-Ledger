@@ -306,3 +306,66 @@ export async function getResultForDate(
     updatedAt: data.updated_at
   };
 }
+
+/**
+ * Récupère tous les résultats d'un utilisateur pour un groupe (triés du plus récent au plus ancien)
+ */
+export async function getUserResults(groupId: string, userId: string): Promise<DailyResult[]> {
+  if (!isSupabaseConfigured()) {
+    const list = getLocalResults().filter((r) => r.groupId === groupId && r.userId === userId);
+    list.sort((a, b) => b.resultDate.localeCompare(a.resultDate));
+    return list;
+  }
+
+  const { data, error } = await supabase
+    .from('daily_results')
+    .select('*')
+    .eq('group_id', groupId)
+    .eq('user_id', userId)
+    .order('result_date', { ascending: false });
+
+  if (error || !data) return [];
+
+  return data.map((d) => ({
+    id: d.id,
+    groupId: d.group_id,
+    userId: d.user_id,
+    resultDate: d.result_date,
+    entryMode: d.entry_mode as EntryMode,
+    total: d.total,
+    chipCounts:
+      d.entry_mode === 'detailed'
+        ? {
+            blue: d.blue_count ?? 0,
+            red: d.red_count ?? 0,
+            black: d.black_count ?? 0,
+            green: d.green_count ?? 0,
+            white: d.white_count ?? 0
+          }
+        : null,
+    createdAt: d.created_at,
+    updatedAt: d.updated_at
+  }));
+}
+
+/**
+ * Supprime un relevé de jetons (par son propriétaire)
+ */
+export async function deleteDailyResult(resultId: string): Promise<{ success: boolean; error?: string }> {
+  if (!isSupabaseConfigured()) {
+    const list = getLocalResults().filter((r) => r.id !== resultId);
+    saveLocalResults(list);
+    return { success: true };
+  }
+
+  const { error } = await supabase
+    .from('daily_results')
+    .delete()
+    .eq('id', resultId);
+
+  if (error) {
+    return { success: false, error: error.message };
+  }
+
+  return { success: true };
+}

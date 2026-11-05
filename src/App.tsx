@@ -9,6 +9,8 @@ import { InviteModal } from './components/groups/InviteModal';
 import { MemberList } from './components/groups/MemberList';
 import { ChipEntryForm } from './components/results/ChipEntryForm';
 import { PokerTrendChart } from './components/charts/PokerTrendChart';
+import { PokerHandsGuide } from './components/poker/PokerHandsGuide';
+import { UserProfileModal } from './components/profile/UserProfileModal';
 import { useAuth } from './context/AuthContext';
 import { NavigationTab, GroupMember, DailyResult } from './types';
 import { formatChips, formatVariation } from './utils/chipCalculations';
@@ -24,7 +26,6 @@ import {
   Calendar,
   AlertCircle,
   Plus,
-  BookOpen,
   ArrowRight,
   UserPlus
 } from 'lucide-react';
@@ -139,6 +140,8 @@ export function App() {
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [isGroupModalOpen, setIsGroupModalOpen] = useState(false);
   const [isInviteModalOpen, setIsInviteModalOpen] = useState(false);
+  const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
+  const [editDateForCount, setEditDateForCount] = useState<string | undefined>(undefined);
 
   // Données de travail
   const [members, setMembers] = useState(INITIAL_MEMBERS);
@@ -189,7 +192,7 @@ export function App() {
         userNickname={userDisplayName}
         isAuthenticated={Boolean(user)}
         isOwner={isOwner}
-        onProfileClick={() => setActiveTab('players')}
+        onProfileClick={() => setIsProfileModalOpen(true)}
         onLoginClick={() => setIsAuthModalOpen(true)}
         onLogoutClick={signOut}
         onInviteClick={() => setIsInviteModalOpen(true)}
@@ -423,6 +426,7 @@ export function App() {
               groupId={effectiveGroupId}
               userId={effectiveUserId}
               timezone={currentGroup?.timezone || 'Europe/Paris'}
+              initialDate={editDateForCount}
               onSaved={handleResultSaved}
             />
           </section>
@@ -477,49 +481,7 @@ export function App() {
            ========================================================================= */}
         {activeTab === 'hands' && (
           <section className="space-y-6" aria-labelledby="hands-heading">
-            <div className="flex items-baseline justify-between border-b border-[#1c3527] pb-3">
-              <div>
-                <h1 id="hands-heading" className="font-serif font-black text-xl sm:text-2xl text-[#f5ebd7] tracking-wider uppercase flex items-center gap-2">
-                  <BookOpen className="w-5 h-5 text-[#dfba73]" />
-                  Combinaisons de Poker
-                </h1>
-                <p className="text-xs text-slate-400 mt-0.5">Hiérarchie des 10 mains — Disponible hors-ligne</p>
-              </div>
-              <span className="text-[10px] font-mono text-[#dfba73] bg-[#0e2219] px-2 py-0.5 rounded border border-[#c5a059]/30">
-                TEXAS HOLD'EM
-              </span>
-            </div>
-
-            <div className="space-y-3">
-              {[
-                { rank: 1, name: 'Quinte Flush Royale', desc: 'As, Roi, Dame, Valet, 10 de la même couleur.', example: 'A♠ K♠ Q♠ J♠ 10♠', tie: 'Partage en cas d’égalité sur le tableau.' },
-                { rank: 2, name: 'Quinte Flush', desc: 'Cinq cartes consécutives de la même couleur.', example: '9♥ 8♥ 7♥ 6♥ 5♥', tie: 'La plus haute carte au sommet de la suite l’emporte.' },
-                { rank: 3, name: 'Carré', desc: 'Quatre cartes de même rang.', example: 'K♦ K♠ K♥ K♣ 9♠', tie: 'Le plus haut carré gagne. Si identique, le kicker le plus fort départage.' },
-                { rank: 4, name: 'Full', desc: 'Trois cartes de même rang combinées à deux cartes d’un autre rang.', example: 'J♠ J♥ J♦ 8♣ 8♠', tie: 'Le plus haut brelan l’emporte, puis la paire en cas d’égalité.' },
-                { rank: 5, name: 'Couleur (Flush)', desc: 'Cinq cartes de la même couleur, non consécutives.', example: 'A♣ J♣ 9♣ 6♣ 2♣', tie: 'La carte la plus haute l’emporte, puis la 2e, 3e, etc.' },
-                { rank: 6, name: 'Quinte (Suite)', desc: 'Cinq cartes consécutives de couleurs différentes.', example: '8♠ 7♥ 6♦ 5♣ 4♠', tie: 'La plus haute carte de la suite l’emporte. L’As peut valoir 1 (A-2-3-4-5) ou 14 (10-J-Q-K-A).' },
-                { rank: 7, name: 'Brelan', desc: 'Trois cartes de même rang.', example: '7♠ 7♥ 7♦ K♣ 2♠', tie: 'Le plus haut brelan l’emporte, puis les deux kickers dans l’ordre.' },
-                { rank: 8, name: 'Deux Paires', desc: 'Deux paires distinctes de rang identique.', example: 'Q♠ Q♥ 9♦ 9♣ A♠', tie: 'La plus haute paire l’emporte, puis la 2e paire, puis le kicker.' },
-                { rank: 9, name: 'Une Paire', desc: 'Deux cartes de même rang.', example: '10♠ 10♦ A♣ K♥ 4♠', tie: 'La plus haute paire l’emporte, puis les kickers du plus haut au plus bas.' },
-                { rank: 10, name: 'Carte Haute', desc: 'Aucune combinaison formée.', example: 'A♠ K♦ J♣ 8♥ 3♠', tie: 'La carte la plus forte l’emporte, puis la suivante.' }
-              ].map((hand) => (
-                <Card key={hand.rank} padding="sm" className="bg-[#0b1a13] border-[#183525]">
-                  <div className="flex items-start gap-3">
-                    <div className="w-8 h-8 rounded-lg bg-[#08140e] border border-[#1b3d2c] text-[#dfba73] flex items-center justify-center font-serif font-black text-xs shrink-0 mt-0.5">
-                      #{hand.rank}
-                    </div>
-                    <div className="flex-1">
-                      <div className="flex items-baseline justify-between gap-2">
-                        <h3 className="font-serif font-bold text-sm text-[#f5ebd7]">{hand.name}</h3>
-                        <span className="font-mono text-xs text-[#dfba73] tracking-wide">{hand.example}</span>
-                      </div>
-                      <p className="text-xs text-slate-300 mt-1">{hand.desc}</p>
-                      <p className="text-[11px] text-slate-400 mt-1 italic">Départage : {hand.tie}</p>
-                    </div>
-                  </div>
-                </Card>
-              ))}
-            </div>
+            <PokerHandsGuide />
           </section>
         )}
       </main>
@@ -535,6 +497,19 @@ export function App() {
         onClose={() => setIsInviteModalOpen(false)}
         groupId={effectiveGroupId}
         userId={effectiveUserId}
+      />
+      <UserProfileModal
+        isOpen={isProfileModalOpen}
+        onClose={() => setIsProfileModalOpen(false)}
+        profile={profile}
+        group={currentGroup}
+        membership={membership}
+        userId={effectiveUserId}
+        onProfileUpdated={() => {}}
+        onNavigateToCount={(date) => {
+          setEditDateForCount(date);
+          setActiveTab('count');
+        }}
       />
     </div>
   );

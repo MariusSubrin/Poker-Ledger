@@ -210,3 +210,119 @@ export async function archiveMember(
 
   return { success: true };
 }
+
+export interface GroupInvitationItem {
+  id: string;
+  groupId: string;
+  expiresAt: string;
+  maxUses: number;
+  usesCount: number;
+  revokedAt: string | null;
+  createdAt: string;
+  isExpired: boolean;
+  isRevoked: boolean;
+  isExhausted: boolean;
+}
+
+/**
+ * Récupère les invitations d'un groupe (pour le propriétaire)
+ */
+export async function getGroupInvitations(groupId: string): Promise<GroupInvitationItem[]> {
+  if (!isSupabaseConfigured()) {
+    return [];
+  }
+
+  const { data, error } = await supabase
+    .from('group_invitations')
+    .select('*')
+    .eq('group_id', groupId)
+    .order('created_at', { ascending: false });
+
+  if (error || !data) return [];
+
+  const now = new Date();
+  return data.map((d) => ({
+    id: d.id,
+    groupId: d.group_id,
+    expiresAt: d.expires_at,
+    maxUses: d.max_uses,
+    usesCount: d.uses_count,
+    revokedAt: d.revoked_at,
+    createdAt: d.created_at,
+    isExpired: new Date(d.expires_at) < now,
+    isRevoked: Boolean(d.revoked_at),
+    isExhausted: d.uses_count >= d.max_uses
+  }));
+}
+
+/**
+ * Révoque une invitation active (réservé au propriétaire)
+ */
+export async function revokeInviteCode(invitationId: string): Promise<{ success: boolean; error?: string }> {
+  if (!isSupabaseConfigured()) {
+    return { success: true };
+  }
+
+  const { error } = await supabase
+    .from('group_invitations')
+    .update({ revoked_at: new Date().toISOString() })
+    .eq('id', invitationId);
+
+  if (error) {
+    return { success: false, error: error.message };
+  }
+
+  return { success: true };
+}
+
+/**
+ * Met à jour les paramètres de la table (nom, fuseau horaire)
+ */
+export async function updateGroupSettings(
+  groupId: string,
+  name: string,
+  timezone: string
+): Promise<{ success: boolean; error?: string }> {
+  if (!isSupabaseConfigured()) {
+    return { success: true };
+  }
+
+  const { error } = await supabase
+    .from('groups')
+    .update({
+      name: name.trim(),
+      timezone: timezone.trim()
+    })
+    .eq('id', groupId);
+
+  if (error) {
+    return { success: false, error: error.message };
+  }
+
+  return { success: true };
+}
+
+/**
+ * Met à jour le pseudo d'un joueur dans le groupe
+ */
+export async function updateMemberNickname(
+  groupId: string,
+  userId: string,
+  nickname: string
+): Promise<{ success: boolean; error?: string }> {
+  if (!isSupabaseConfigured()) {
+    return { success: true };
+  }
+
+  const { error } = await supabase
+    .from('group_members')
+    .update({ nickname: nickname.trim() })
+    .eq('group_id', groupId)
+    .eq('user_id', userId);
+
+  if (error) {
+    return { success: false, error: error.message };
+  }
+
+  return { success: true };
+}

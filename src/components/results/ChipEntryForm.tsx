@@ -37,6 +37,7 @@ export interface ChipEntryFormProps {
   groupId: string;
   userId: string;
   timezone?: string;
+  initialDate?: string;
   onSaved?: (result: DailyResult) => void;
 }
 
@@ -60,9 +61,16 @@ export const ChipEntryForm: React.FC<ChipEntryFormProps> = ({
   groupId,
   userId,
   timezone = DEFAULT_TIMEZONE,
+  initialDate,
   onSaved
 }) => {
-  const [resultDate, setResultDate] = useState(() => getTodayDateString(timezone));
+  const [resultDate, setResultDate] = useState(() => initialDate || getTodayDateString(timezone));
+
+  useEffect(() => {
+    if (initialDate) {
+      setResultDate(initialDate);
+    }
+  }, [initialDate]);
   const [entryMode, setEntryMode] = useState<EntryMode>('detailed');
   const [chipCounts, setChipCounts] = useState<ChipCounts>(EMPTY_CHIPS);
   const [directTotal, setDirectTotal] = useState<number>(0);
